@@ -20,11 +20,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/xse"
+    "url": "https://github.com/HemaCharanPyla/xse"
   },
-  "homepage": "https://github.com/your-username/xse#readme",
+  "homepage": "https://github.com/HemaCharanPyla/xse#readme",
   "bugs": {
-    "url": "https://github.com/your-username/xse/issues"
+    "url": "https://github.com/HemaCharanPyla/xse/issues"
   },
   "dependencies": {
     "express": "^5.2.1",
