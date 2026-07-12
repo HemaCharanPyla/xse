@@ -5,100 +5,94 @@
 Chat with ChatGPT directly from your terminal via browser automation. XSE launches a headless Chrome instance, connects to ChatGPT, and gives you a polished interactive CLI experience.
 
 ```bash
-npx xse
+npx github:HemaCharanPyla/xse
 ```
 
-## Features
+## Quick Start
 
-- **Terminal chat** — full interactive session with ChatGPT from the command line
-- **Polished UI** — box-drawn messages, color-coded output, streaming text, spinners
-- **Command system** — `/help`, `/new`, `/clear`, `/history`, `/browser`, `/session`, `/config`, and more
-- **Session management** — message history, timing, session tracking
-- **Automation backend** — Puppeteer-driven headless Chrome
-- **API server** — Express REST API (start with `npm run api`)
+### 1. Install Chrome
 
-## Requirements
+Make sure Google Chrome is installed. XSE uses your existing Chrome — no extra browser download.
 
-- **Node.js 18+**
-- **Google Chrome** installed
-- **ChatGPT cookies** exported to `cookies/chatgpt.json`
+### 2. Export ChatGPT Cookies
 
-### Getting Cookies
+XSE needs your ChatGPT session cookies to authenticate.
 
-1. Install a cookie export extension (e.g. "EditThisCookie" or similar)
-2. Log into `https://chatgpt.com/`
-3. Export cookies as JSON (Puppeteer-compatible format)
-4. Save to `cookies/chatgpt.json`
+- Install a cookie export extension (e.g. **EditThisCookie** or **Get cookies.txt**)
+- Log in to `https://chatgpt.com/` in Chrome
+- Export cookies as **JSON** (Puppeteer-compatible format)
+- Save the file as `cookies/chatgpt.json`
 
-## Install & Run
+### 3. Run
+
+Open a terminal in the **same folder** as your `cookies/chatgpt.json` and run:
 
 ```bash
-# Run directly without install
-npx xse
-
-# Or install globally
-npm install -g xse
-xse
-
-# Or clone and run locally
-git clone <repo-url>
-cd xse
-npm install
-npm start
+npx github:HemaCharanPyla/xse
 ```
 
-## Usage
+That's it. The CLI will:
+1. Show the XSE splash screen
+2. Auto-connect to Chrome and ChatGPT
+3. Present a prompt — start chatting
 
-```
-  ❯ what is the meaning of life?
-
-  ┌─────────────────────────────────────┐
-  │ You                       14:30:01  │
-  ├─────────────────────────────────────┤
-  │ What is the meaning of life?        │
-  └─────────────────────────────────────┘
-
-  ┌─────────────────────────────────────┐
-  │ XSE                        14:30:05 │
-  ├─────────────────────────────────────┤
-  │ That's a profound question...       │
-  └─────────────────────────────────────┘
-```
-
-### Commands
+## Commands
 
 | Command | Alias | Description |
 |---------|-------|-------------|
-| `/help` | `/h` `/?` | Show available commands |
+| `/help` | `/h` `/?` | Show all commands |
 | `/new` | `/n` | Start a fresh session |
-| `/clear` | `/c` | Clear terminal |
+| `/clear` | `/c` | Clear the terminal |
 | `/exit` | `/q` `/x` | Quit XSE |
-| `/history` | `/hist` | Show message history |
-| `/model` | `/m` | View active model |
+| `/history` | `/hist` | View message history |
+| `/model` | `/m` | Show active model |
 | `/browser` | `/b` | Browser automation status |
-| `/session` | `/ss` `/sess` | Session information |
+| `/session` | `/ss` `/sess` | Session info |
 | `/config` | `/cfg` | Configuration summary |
 | `/logs` | `/log` | Recent events |
-| `/splash` | — | Show XSE branding |
+| `/splash` | — | Replay the splash screen |
 
 ## Environment Variables
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `CHROME_PATH` | Auto-detect | Chrome executable path |
+| `CHROME_PATH` | Auto-detect | Chrome executable location |
 | `CHROME_DEBUG_PORT` | `9222` | Remote debugging port |
 | `CHROME_USER_DATA_DIR` | `./.chrome-debug` | Chrome profile directory |
-| `COOKIES_PATH` | `./cookies/chatgpt.json` | Cookie file |
+| `COOKIES_PATH` | `./cookies/chatgpt.json` | Path to cookie file |
 | `HEADLESS` | `true` | Run Chrome headless |
 | `XSE_AUTO_INIT` | `true` | Auto-connect on startup |
 
-### PowerShell Example
+### PowerShell
 
 ```powershell
 $env:CHROME_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe"
 $env:HEADLESS="true"
-npx xse
+npx github:HemaCharanPyla/xse
 ```
+
+### macOS / Linux
+
+```bash
+CHROME_PATH=/usr/bin/google-chrome npx github:HemaCharanPyla/xse
+```
+
+## Install Locally
+
+```bash
+git clone https://github.com/HemaCharanPyla/xse.git
+cd xse
+npm install
+npm start
+```
+
+## Features
+
+- **Terminal chat** — full interactive ChatGPT session from the command line
+- **Polished UI** — box-drawn messages, color-coded output, streaming text, animated spinners
+- **Smart rendering** — code blocks, multi-line responses, typewriter-style output
+- **Session tracking** — message history, timestamps, session duration
+- **Zero bloat** — uses your existing Chrome (puppeteer-core, no Chromium download)
 
 ## Architecture
 
@@ -107,25 +101,34 @@ xse/
 ├── bin/xse.js         # CLI entry point
 ├── src/
 │   ├── cli.js         # Main loop, input, orchestration
-│   ├── theme.js       # Colors, styles, box drawing, logo
+│   ├── theme.js       # Colors, styles, box drawing, XSE logo
 │   ├── splash.js      # Branding splash screen
-│   ├── chat.js        # Message rendering, code blocks
-│   ├── commands.js    # Command system (12 commands)
+│   ├── chat.js        # Message rendering, code blocks, streaming
+│   ├── commands.js    # Command system (11 commands + aliases)
 │   ├── browser.js     # Chrome/Puppeteer automation
 │   └── session.js     # History, state, timing
-├── index.js           # Express API server (optional)
+├── index.js           # Express REST API (legacy)
 └── ai.js              # Original CLI script (legacy)
 ```
 
+## Troubleshooting
+
+**"Cookies file not found"**
+Run the command from the folder that contains `cookies/chatgpt.json`, or set `COOKIES_PATH` to the full path.
+
+**"Failed to connect to Chrome"**
+Make sure Chrome is installed. If Chrome is already running, XSE will connect to it automatically. Set `CHROME_PATH` if auto-detection fails.
+
+**"Waiting failed" timeout**
+ChatGPT may be slow to respond. If it times out, ChatGPT's page selectors might have changed — check for ChatGPT UI updates.
+
 ## API Server
 
-XSE includes a standalone Express REST API:
+XSE also includes a standalone Express REST API (the original backend):
 
 ```bash
 npm run api
 ```
-
-See `index.js` for endpoint documentation.
 
 ## License
 
