@@ -122,6 +122,39 @@ Make sure Chrome is installed. If Chrome is already running, XSE will connect to
 **"Waiting failed" timeout**
 ChatGPT may be slow to respond. If it times out, ChatGPT's page selectors might have changed — check for ChatGPT UI updates.
 
+## Docker (24/7)
+
+XSE runs perfectly in Docker — no local Node.js or Chrome needed.
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed
+- `cookies/chatgpt.json` in your project folder
+
+### Build & Run
+
+```bash
+# Build the image
+docker compose build
+
+# Run interactively
+docker compose run --rm xse
+
+# Or run in background (24/7 mode)
+docker compose up -d
+docker attach xse    # attach to interact
+```
+
+### One-liner (no clone needed)
+
+```bash
+docker run -it --rm \
+  -v "%cd%/cookies:/app/cookies:ro" \
+  ghcr.io/HemaCharanPyla/xse
+```
+
+The container auto-starts Chrome headless and connects to ChatGPT. Stop with `Ctrl+C` or `docker compose down`.
+
 ## API Server
 
 XSE also includes a standalone Express REST API (the original backend):

@@ -1,0 +1,17 @@
+services:
+  xse:
+    build: .
+    image: xse
+    container_name: xse
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./cookies:/app/cookies:ro
+      - xse-chrome:/tmp/xse-chrome
+    environment:
+      - COOKIES_PATH=/app/cookies/chatgpt.json
+      - HEADLESS=true
+      - CHROME_DEBUG_PORT=9222
+
+volumes:
+  xse-chrome:
