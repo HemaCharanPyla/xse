@@ -2,18 +2,40 @@ import express from "express";
 import puppeteer from "puppeteer-core";
 import { spawn } from "child_process";
 import { randomUUID } from "crypto";
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function resolveChromePath() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  const candidates = {
+    win32: [
+      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+    ],
+    darwin: ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"],
+    linux: [
+      "/usr/bin/google-chrome-stable",
+      "/usr/bin/google-chrome",
+      "/usr/bin/chromium",
+      "/usr/bin/chromium-browser",
+    ],
+  };
+  const list = candidates[process.platform] || candidates.linux;
+  return list.find(c => existsSync(c)) || list[0];
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const CHATGPT_URL = "https://chatgpt.com/";
-const CHROME_PATH =
-  process.env.CHROME_PATH ||
-  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+const CHROME_PATH = resolveChromePath();
 const CHROME_DEBUG_PORT = process.env.CHROME_DEBUG_PORT || "9222";
-const CHROME_USER_DATA_DIR =
-  process.env.CHROME_USER_DATA_DIR || "C:\\chrome-debug";
+const CHROME_USER_DATA_DIR = process.env.CHROME_USER_DATA_DIR || "/tmp/xse-chrome";
 const COOKIES_PATH = process.env.COOKIES_PATH || "./cookies/chatgpt.json";
+const COOKIES_JSON = process.env.COOKIES_JSON || "";
 
 function positiveInt(value, fallback) {
   const number = Number.parseInt(value, 10);
@@ -87,11 +109,13 @@ const pageCreateLimiter = new Semaphore(MAX_CONCURRENT_PAGE_CREATES);
 const messageLimiter = new Semaphore(MAX_CONCURRENT_MESSAGES);
 
 function loadCookies() {
-  if (!existsSync(COOKIES_PATH)) {
-    throw new Error(`Cookies file not found at ${COOKIES_PATH}`);
+  if (COOKIES_JSON) {
+    return JSON.parse(COOKIES_JSON);
   }
-
-  return JSON.parse(readFileSync(COOKIES_PATH, "utf-8"));
+  if (existsSync(COOKIES_PATH)) {
+    return JSON.parse(readFileSync(COOKIES_PATH, "utf-8"));
+  }
+  throw new Error(`Cookies not found. Set COOKIES_PATH, COOKIES_JSON env, or place cookies at ${COOKIES_PATH}`);
 }
 
 function startChrome() {
