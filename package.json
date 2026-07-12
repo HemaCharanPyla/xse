@@ -1,0 +1,49 @@
+{
+  "name": "xse",
+  "version": "1.0.0",
+  "description": "XSE — AI-Powered Browser Automation CLI. Chat with ChatGPT from your terminal via browser automation.",
+  "license": "ISC",
+  "author": "Bhavya",
+  "type": "module",
+  "main": "src/cli.js",
+  "bin": {
+    "xse": "./bin/xse.js"
+  },
+  "scripts": {
+    "start": "node bin/xse.js",
+    "xse": "node bin/xse.js",
+    "api": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/xse"
+  },
+  "homepage": "https://github.com/your-username/xse#readme",
+  "bugs": {
+    "url": "https://github.com/your-username/xse/issues"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "puppeteer-core": "^24.43.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "index.js",
+    "ai.js"
+  ],
+  "keywords": [
+    "xse",
+    "cli",
+    "chatgpt",
+    "puppeteer",
+    "automation",
+    "browser",
+    "ai",
+    "terminal"
+  ]
+}
