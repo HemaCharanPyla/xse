@@ -63,7 +63,7 @@ export class BrowserManager {
     if (this.chromeProcess && !this.chromeProcess.killed) return;
 
     const chromePath = this.resolveChromePath();
-    const userDataDir = this.config.CHROME_USER_DATA_DIR || path.join(__dirname, '..', '.chrome-debug');
+    const userDataDir = this.config.CHROME_USER_DATA_DIR || path.join(process.cwd(), '.chrome-debug');
     const debugPort = this.config.CHROME_DEBUG_PORT || '9222';
     const headless = this.config.HEADLESS !== 'false' ? '--headless=new' : '';
 
@@ -126,11 +126,23 @@ export class BrowserManager {
   }
 
   loadCookies() {
-    const cookiesPath = this.config.COOKIES_PATH || path.join(__dirname, '..', 'cookies', 'chatgpt.json');
-    if (!existsSync(cookiesPath)) {
-      throw new Error(`Cookies file not found at ${cookiesPath}`);
+    const paths = [
+      this.config.COOKIES_PATH,
+      path.join(process.cwd(), 'cookies', 'chatgpt.json'),
+      path.join(__dirname, '..', 'cookies', 'chatgpt.json'),
+    ].filter(Boolean);
+
+    for (const p of paths) {
+      if (existsSync(p)) {
+        return JSON.parse(readFileSync(p, 'utf-8'));
+      }
     }
-    return JSON.parse(readFileSync(cookiesPath, 'utf-8'));
+
+    throw new Error(
+      `Cookies file not found. Place chatgpt.json in:\n` +
+      `  - ${paths[1]}\n  - ${paths[2]}\n` +
+      `Or set COOKIES_PATH environment variable.`
+    );
   }
 
   async preparePage(page) {
