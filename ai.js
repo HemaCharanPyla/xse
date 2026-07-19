@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { spawn } from "child_process";
 import { existsSync, readFileSync } from "fs";
 import path from "path";
