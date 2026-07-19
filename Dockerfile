@@ -10,9 +10,7 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m -u 1000 xse && \
-    mkdir -p /app/cookies && \
-    chown -R xse:xse /app
+RUN useradd -m -u 1000 xse && mkdir -p /app && chown -R xse:xse /app
 
 WORKDIR /app
 
@@ -23,10 +21,14 @@ COPY bin/ ./bin/
 COPY src/ ./src/
 COPY index.js ai.js ./
 
+ENV PORT=3000
 ENV HEADLESS=true
 ENV CHROME_PATH=/usr/bin/google-chrome-stable
 ENV CHROME_USER_DATA_DIR=/tmp/xse-chrome
+ENV COOKIES_PATH=/app/cookies/chatgpt.json
 
 USER xse
 
-CMD ["node", "bin/xse.js"]
+EXPOSE 3000
+
+CMD ["node", "index.js"]

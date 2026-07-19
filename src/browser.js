@@ -126,6 +126,9 @@ export class BrowserManager {
   }
 
   loadCookies() {
+    const json = process.env.COOKIES_JSON;
+    if (json) return JSON.parse(json);
+
     const paths = [
       this.config.COOKIES_PATH,
       path.join(process.cwd(), 'cookies', 'chatgpt.json'),
@@ -139,9 +142,8 @@ export class BrowserManager {
     }
 
     throw new Error(
-      `Cookies file not found. Place chatgpt.json in:\n` +
-      `  - ${paths[1]}\n  - ${paths[2]}\n` +
-      `Or set COOKIES_PATH environment variable.`
+      `Cookies not found. Set COOKIES_PATH, COOKIES_JSON env, or place file at:\n` +
+      `  - ${paths[1]}\n  - ${paths[2]}`
     );
   }
 
